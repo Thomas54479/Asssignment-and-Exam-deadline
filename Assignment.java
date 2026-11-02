@@ -24,7 +24,7 @@ public class Assignment extends Task {
     @Override
     public int getPriorityScore() {
         if (isDone()) return 0;
-        long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), getDuDate());
+        long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), getDueDate());
         if (daysLeft < 0) return 100; // overdue
         return (int) Math.min(100, Math.round(weightPercent / Math.max(daysLeft, 1)));
     }
