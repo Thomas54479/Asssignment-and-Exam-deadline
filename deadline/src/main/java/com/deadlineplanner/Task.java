@@ -18,6 +18,9 @@ public abstract  class Task {
     public LocalDate getDueDate()    { return dueDate; }
     public boolean isDone()         { return done; }
 
+    public void setDone(boolean done) {
+    this.done = done;
+    }
     public void markDone() {
         this.done = true;
     }
