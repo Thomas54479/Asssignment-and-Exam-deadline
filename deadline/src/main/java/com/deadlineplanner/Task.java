@@ -7,10 +7,10 @@ public abstract  class Task {
     private LocalDate dueDate;
     private boolean done;
 
-    public Task(String course, String title, LocalDate duDate, boolean done){
+    public Task(String course, String title, LocalDate dueDate, boolean done){
         this.course = course;
         this.title = title;
-        this.dueDate = duDate;
+        this.dueDate = dueDate;
         this.done = done;
     }
     public String getCourse()       { return course; }
