@@ -15,9 +15,6 @@ public abstract class Task {
         this.done = done;
         
     }
-    public void setDone(boolean done){
-        this.done = done;
-    }
     
     public String getCourse() {
         return course;

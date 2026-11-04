@@ -102,7 +102,7 @@ public class FileStorage {
         // The type decides which subclass gets created
         switch (type) {
             case "Assignment":
-                return new Assignment(course, title, dueDate, done);
+                return new Assignment(course, title, dueDate, done, weightPercent);
             case "Test":
                 return new Test(course, title, dueDate, done);
             case "Exam":
