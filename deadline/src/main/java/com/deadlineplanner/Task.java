@@ -13,6 +13,10 @@ public abstract class Task {
         this.title = title;
         this.dueDate = dueDate;
         this.done = done;
+        
+    }
+    public void setDone(boolean done){
+        this.done = done;
     }
     
     public String getCourse() {
