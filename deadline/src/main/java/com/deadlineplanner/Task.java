@@ -35,6 +35,9 @@ public abstract class Task {
         return done;
     }
 
+    public void setDone(boolean done) {
+    this.done = done;
+    }
     public void markDone() {
         this.done = true;
     }
