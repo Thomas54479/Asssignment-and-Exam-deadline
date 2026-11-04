@@ -27,13 +27,13 @@ Our Assignment and Exam Deadline Planner helps students organise their academic 
 
 Our Java Classes
 
-Task.java: Abstract parent class containing common properties and behaviours of academic tasks.
-Assignment.java: Represents assignments and calculates priority using remaining days and assignment weight.
-Test.java: Represents tests and calculates priority based on approaching test dates.
-Exam.java: Represents examinations and gives them higher priority as their dates approach.
-Planner.java: Manages tasks, including adding, deleting, completing and organising tasks.
-FileStorage.java: Saves and loads task information using file storage.
-Main.java: Starts the Javalin server and provides API endpoints connecting the backend to the frontend.
-PastDeadlineException.java: Handles errors when a task has a deadline that has already passed.
-StorageException.java: Handles errors related to saving and loading task information.
-TaskNotFoundException.java: Handles situations where a requested task cannot be found
+1. Task.java: Abstract parent class containing common properties and behaviours of academic tasks.
+2. Assignment.java: Represents assignments and calculates priority using remaining days and assignment weight.
+3. Test.java: Represents tests and calculates priority based on approaching test dates.
+4. Exam.java: Represents examinations and gives them higher priority as their dates approach.
+5. Planner.java: Manages tasks, including adding, deleting, completing and organising tasks.
+6. FileStorage.java: Saves and loads task information using file storage.
+7. Main.java: Starts the Javalin server and provides API endpoints connecting the backend to the frontend.
+8. PastDeadlineException.java: Handles errors when a task has a deadline that has already passed.
+9. StorageException.java: Handles errors related to saving and loading task information.
+10. TaskNotFoundException.java: Handles situations where a requested task cannot be found
