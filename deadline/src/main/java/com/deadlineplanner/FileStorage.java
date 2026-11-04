@@ -98,7 +98,7 @@ public class FileStorage {
         } catch (DateTimeParseException e) {
             throw new StorageException("Bad date in data file: " + line, e);
         }
-
+        double weightPercent = 0.0;
         // The type decides which subclass gets created
         switch (type) {
             case "Assignment":

@@ -1,92 +1,226 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Deadline Planner</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 640px; margin: 20px auto; padding: 0 12px; }
-    form { display: grid; gap: 8px; margin-bottom: 16px; }
-    input, select, button { padding: 8px; font-size: 16px; }
-    li { margin-bottom: 8px; }
-    #message { color: #b00020; min-height: 1.2em; }
-  </style>
-</head>
-<body>
-  <h1>Deadline Planner</h1>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Deadline Planner</title>
 
-  <form id="taskForm">
-    <select id="type">
-      <option>Assignment</option>
-      <option>Test</option>
-      <option>Exam</option>
-    </select>
-    <input id="course" placeholder="Course (e.g. CS201)" required>
-    <input id="title" placeholder="Title (e.g. OOP Project)" required>
-    <input id="dueDate" type="date" required>
-    <button type="submit">Add task</button>
-  </form>
-  <p id="message"></p>
-
-  <h2>Most urgent first</h2>
-  <ul id="list"></ul>
-
-  <script>
-    const message = document.getElementById("message");
-
-    async function loadTasks() {
-      const res = await fetch("/tasks/urgent");
-      const tasks = await res.json();
-      const list = document.getElementById("list");
-      list.innerHTML = "";
-
-      for (const t of tasks) {
-        const li = document.createElement("li");
-        li.textContent = "[" + t.type + "] " + t.course + " - " + t.title +
-          " | due " + t.dueDate + " | priority " + t.priority +
-          (t.done ? " (DONE) " : " ");
-
-        if (!t.done) {
-          const doneBtn = document.createElement("button");
-          doneBtn.textContent = "Done";
-          doneBtn.onclick = async () => { await fetch("/tasks/" + t.id, { method: "PUT" }); loadTasks(); };
-          li.appendChild(doneBtn);
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 640px;
+            margin: 20px auto;
+            padding: 0 12px;
         }
 
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "Delete";
-        delBtn.onclick = async () => { await fetch("/tasks/" + t.id, { method: "DELETE" }); loadTasks(); };
-        li.appendChild(delBtn);
+        form {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
 
-        list.appendChild(li);
-      }
-    }
+        input, select, button {
+            padding: 8px;
+            font-size: 16px;
+        }
 
-    document.getElementById("taskForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const body = {
-        type: document.getElementById("type").value,
-        course: document.getElementById("course").value,
-        title: document.getElementById("title").value,
-        dueDate: document.getElementById("dueDate").value
-      };
+        li {
+            margin-bottom: 8px;
+        }
 
-      const res = await fetch("/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
+        #message {
+            color: #b00020;
+            min-height: 1.2em;
+        }
+    </style>
+</head>
 
-      if (res.ok) {
-        message.textContent = "";
-        e.target.reset();
+<body>
+
+    <h1>Deadline Planner</h1>
+
+    <form id="taskForm">
+
+        <select id="type">
+            <option>Assignment</option>
+            <option>Test</option>
+            <option>Exam</option>
+        </select>
+
+        <input id="course" placeholder="Course (e.g. CS201)" required>
+
+        <input id="title" placeholder="Title (e.g. OOP Project)" required>
+
+        <input id="dueDate" type="date" required>
+
+        <button type="submit">Add task</button>
+       
+
+    </form>
+
+    <p id="message"></p>
+
+    <h2>Most urgent first</h2>
+
+    <ul id="list"></ul>
+
+    <script>
+
+        const message = document.getElementById("message");
+
+        // Load all tasks
+        async function loadTasks() {
+
+            try {
+
+                const res = await fetch("/api/tasks");
+
+                if (!res.ok) {
+                    throw new Error("Could not load tasks.");
+                }
+
+                const tasks = await res.json();
+
+                const list = document.getElementById("list");
+
+                list.innerHTML = "";
+
+                for (const t of tasks) {
+
+                    const li = document.createElement("li");
+
+                    li.textContent =
+                        "[" + t.type + "] " +
+                        t.course + " - " +
+                        t.title +
+                        " | due " + t.dueDate +
+                        " | priority " + t.priorityScore +
+                        (t.done ? " (DONE)" : "");
+
+                    // Show assignment weight
+                    if (t.type === "Assignment") {
+                        li.textContent +=
+                            " | Weight: " + t.weightPercent + "%";
+                    }
+
+                    // Mark task as completed
+                    if (!t.done) {
+
+                        const doneBtn = document.createElement("button");
+
+                        doneBtn.textContent = "Done";
+
+                        doneBtn.onclick = async () => {
+
+                            const response = await fetch(
+                                "/api/tasks/done?title=" +
+                                encodeURIComponent(t.title),
+                                { method: "PATCH" }
+                            );
+
+                            if (!response.ok) {
+                                alert(await response.text());
+                            }
+
+                            loadTasks();
+                        };
+
+                        li.appendChild(doneBtn);
+                    }
+
+                    // Delete task
+                    const delBtn = document.createElement("button");
+
+                    delBtn.textContent = "Delete";
+
+                    delBtn.onclick = async () => {
+
+                        const response = await fetch(
+                            "/api/tasks?course=" +
+                            encodeURIComponent(t.course) +
+                            "&title=" +
+                            encodeURIComponent(t.title),
+                            { method: "DELETE" }
+                        );
+
+                        if (!response.ok) {
+                            alert(await response.text());
+                        }
+
+                        loadTasks();
+                    };
+
+                    li.appendChild(delBtn);
+
+                    list.appendChild(li);
+                }
+
+            } catch (error) {
+
+                message.textContent = error.message;
+
+            }
+        }
+
+        // Add a new task
+        document.getElementById("taskForm")
+            .addEventListener("submit", async (e) => {
+
+                e.preventDefault();
+
+                const body = {
+
+                    type: document.getElementById("type").value,
+
+                    course: document.getElementById("course").value,
+
+                    title: document.getElementById("title").value,
+
+                    dueDate: document.getElementById("dueDate").value
+
+                };
+
+                try {
+
+                    const res = await fetch("/api/tasks", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(body)
+
+                    });
+
+                    if (res.ok) {
+
+                        message.textContent = "Task added successfully!";
+
+                        e.target.reset();
+
+                        loadTasks();
+
+                    } else {
+
+                        message.textContent = await res.text();
+
+                    }
+
+                } catch (error) {
+
+                    message.textContent = "Could not connect to the server.";
+
+                }
+
+            });
+
+        // Load tasks when page opens
         loadTasks();
-      } else {
-        message.textContent = await res.text();   // shows e.g. "Due date ... has already passed"
-      }
-    });
 
-    loadTasks();
-  </script>
+    </script>
+
 </body>
 </html>

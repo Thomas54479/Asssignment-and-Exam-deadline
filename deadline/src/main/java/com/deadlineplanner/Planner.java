@@ -1,5 +1,3 @@
-this is the planner.java made by one of my team member 
-
 package com.deadlineplanner;
 
 import java.time.LocalDate;
@@ -10,6 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Planner {
+    public class InvalidDateException extends Exception {
+
+    public InvalidDateException(String message) {
+        super(message);
+    }
+}
+
     private final List<Task> tasks = new ArrayList<>();
 
     // Add a task to the planner, throwing a custom exception if the date is in the past
