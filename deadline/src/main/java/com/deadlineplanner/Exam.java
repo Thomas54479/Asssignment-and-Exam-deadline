@@ -1,3 +1,4 @@
+
 package com.deadlineplanner;
 
 import java.time.LocalDate;
@@ -34,4 +35,3 @@ public class Exam extends Task {
         return Math.min(priority, 100);
     }
 }
-
